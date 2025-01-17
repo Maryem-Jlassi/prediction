@@ -7,3 +7,4 @@ pip
 numpy
 plotly
 xgboost
+joblib
