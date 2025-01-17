@@ -11,6 +11,19 @@ import matplotlib.pyplot as plt
 import joblib
 import xgboost as xgb
 
+def extract_model(zip_file, output_folder):
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        zip_ref.extractall(output_folder)
+
+zip_file_path = 'good.zip'  
+output_folder = 'model/'  
+
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+extract_model(zip_file_path, output_folder)
+model_path = os.path.join(output_folder, 'good.pkl')  
+model = joblib.load(model_path)
 # Configuration de la page
 st.set_page_config(
     page_title="InsightPlate Analytics",
