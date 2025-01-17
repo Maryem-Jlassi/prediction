@@ -676,10 +676,8 @@ def page_2():
 
 @st.cache_resource
 def load_model():
-    model = joblib.load('good.pkl')  # Adjust the path if necessary
-    return model
 
-model = load_model()
+model1 = load_model()
 
 def page_3():
     """Page de prédiction du niveau de risque des restaurants."""
@@ -690,7 +688,7 @@ def page_3():
 }  </style>
     """, unsafe_allow_html=True) 
     # Chargement du modèle
-    #model = load_model()
+    model1 = load_model()
     with st.expander("About this predictor"):
         st.write("""This tool predicts the **risk level** for restaurants in Los Angeles based on various inputs.
                  . The prediction uses a machine learning model based on historical data. """)
