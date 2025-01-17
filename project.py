@@ -25,7 +25,7 @@ if not os.path.exists(output_folder):
 
 extract_model(zip_file_path, output_folder)
 model_path = os.path.join(output_folder, 'good.pkl')  
-model = joblib.load(model_path)
+model1 = joblib.load(model_path)
 # Configuration de la page
 st.set_page_config(
     page_title="InsightPlate Analytics",
@@ -690,7 +690,7 @@ def page_3():
 }  </style>
     """, unsafe_allow_html=True) 
     # Chargement du modèle
-    model = load_model()
+    model1 = load_model()
     
 
     with st.expander("About this predictor"):
