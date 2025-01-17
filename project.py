@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import joblib
 import xgboost as xgb
+import zipfile
+import os
 
 def extract_model(zip_file, output_folder):
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
