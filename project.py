@@ -674,11 +674,6 @@ def page_2():
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
-@st.cache_resource
-def load_model():
-
-model1 = load_model()
-return model1
 
 def page_3():
     """Page de prédiction du niveau de risque des restaurants."""
