@@ -6,3 +6,4 @@ streamlit
 pip
 numpy
 plotly
+xgboost
