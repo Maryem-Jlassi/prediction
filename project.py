@@ -690,9 +690,7 @@ def page_3():
 }  </style>
     """, unsafe_allow_html=True) 
     # Chargement du modèle
-    model1 = load_model()
-    
-
+    #model = load_model()
     with st.expander("About this predictor"):
         st.write("""This tool predicts the **risk level** for restaurants in Los Angeles based on various inputs.
                  . The prediction uses a machine learning model based on historical data. """)
