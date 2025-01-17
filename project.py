@@ -678,6 +678,7 @@ def page_2():
 def load_model():
 
 model1 = load_model()
+return model1
 
 def page_3():
     """Page de prédiction du niveau de risque des restaurants."""
