@@ -291,9 +291,9 @@ st.markdown("""
 def load_model_and_transformers():
     """Charge les modèles et transformateurs nécessaires."""
     try:
-        model = joblib.load('model/model.pkl')
-        scaler = joblib.load('model/scaler.pkl')
-        label_encoders = joblib.load('model/label_encoders.pkl')
+        model = joblib.load('model.pkl')
+        scaler = joblib.load('scaler.pkl')
+        label_encoders = joblib.load('label_encoders.pkl')
         return model, scaler, label_encoders
     except Exception as e:
         st.error(f"Erreur lors du chargement des modèles : {str(e)}")
@@ -537,23 +537,97 @@ def page_1():
 # Function to load the model and transformers
 @st.cache_resource
 def load_model_and_transformers():
-    model = joblib.load('model/model.pkl')
-    scaler = joblib.load('model/scaler.pkl')
-    label_encoders = joblib.load('model/label_encoders.pkl')
+    model = joblib.load('model.pkl')
+    scaler = joblib.load('scaler.pkl')
+    label_encoders = joblib.load('label_encoders.pkl')
     return model, scaler, label_encoders
+model, scaler, label_encoders = load_model_and_transformers()
 
-    # Préparation des données et entraînement similaire au code original
-    # [Code de préparation des données...]
+# Get unique values from label encoders
+certification_levels = label_encoders['Certification Level'].classes_
 
-    # Interface utilisateur
-    st.markdown("""
-        <div class="glass-card">
-            <h2>Enter Parameters</h2>
-        </div>
-    """, unsafe_allow_html=True)
+# Streamlit app
+st.title("Employee Compliance Rate Predictor")
 
-    # [Suite du code pour l'interface utilisateur et la prédiction...]
+# Create two columns for input fields
+col1, col2 = st.columns(2)
 
+with col1:
+    st.header("Employee Information")
+    # Employee Title (Text input)
+    employee_title = st.text_input("Employee Title", placeholder="Enter the employee's title")
+    
+    # Department (Text input)
+    department = st.text_input("Department", placeholder="Enter the department")
+    
+    # Certification Level (Select box with actual values from training data)
+    certification_level = st.selectbox(
+        "Certification Level",
+        certification_levels
+    )
+
+with col2:
+    st.header("Performance Metrics")
+    # Years of Experience (Slider: 0 to 39)
+    years_of_experience = st.slider("Years of Experience", 0, 39, 5)
+    
+    # Avg Inspection Score (Slider: 0.0 to 10.0)
+    avg_inspection_score = st.slider("Avg Inspection Score", 0.0, 10.0, 5.0)
+    
+    # Training Hours (Slider: 10 to 199)
+    training_hours = st.slider("Training Hours", 10, 199, 50)
+
+# Prediction
+if st.button("Predict Compliance Rate"):
+    try:
+        # Create input data frame
+        input_data = pd.DataFrame({
+            "Employee Title": [employee_title],
+            "Years of Experience": [years_of_experience],
+            "Avg Inspection Score": [avg_inspection_score],
+            "Training Hours": [training_hours],
+            "Certification Level": [certification_level],
+            "Department": [department],
+            "Compliance Rate": [0]  # Add dummy value for scaling
+        })
+
+        # Transform categorical variables using loaded label encoders
+        for col, encoder in label_encoders.items():
+            if col in input_data.columns:
+                try:
+                    input_data[col] = encoder.transform(input_data[col])
+                except ValueError as e:
+                    st.error(f"Error: Invalid value for {col}. Please check if the input matches the training data categories.")
+                    st.write(f"Valid values for {col}:", encoder.classes_)
+                    st.stop()
+
+        # Scale all features using the loaded scaler
+        scaled_features = scaler.transform(input_data)
+        
+        # Remove the Compliance Rate column for prediction
+        scaled_features_no_target = np.delete(scaled_features, input_data.columns.get_loc("Compliance Rate"), axis=1)
+        
+        # Create DMatrix with proper feature names
+        feature_names = [col for col in input_data.columns if col != "Compliance Rate"]
+        dmatrix_input = xgb.DMatrix(scaled_features_no_target, feature_names=feature_names)
+        
+        # Make prediction
+        scaled_pred = model.predict(dmatrix_input)
+        
+        # Create dummy array for inverse transform
+        dummy_data = np.zeros_like(scaled_features)
+        dummy_data[:, input_data.columns.get_loc("Compliance Rate")] = scaled_pred
+        
+        # Inverse transform prediction
+        prediction = scaler.inverse_transform(dummy_data)[:, input_data.columns.get_loc("Compliance Rate")][0]
+        
+        # Display prediction with styling
+        st.success("Prediction successful!")
+        st.metric(
+            label="Predicted Compliance Rate",
+            value=f"{prediction:.1f}%",
+            
+        )
 def page_2():
     """Page de prédiction du taux de conformité des employés."""
     st.markdown('<h1 class="fade-in">Employee Compliance Rate Prediction</h1>', unsafe_allow_html=True)
