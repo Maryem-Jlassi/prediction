@@ -19,6 +19,8 @@ st.set_page_config(
     page_icon="🍽️",
     initial_sidebar_state="expanded"
 )
+st.image("res.png", caption="Bannière d'accueil", use_column_width=True)
+
 
 # Styles globaux
 st.markdown("""
