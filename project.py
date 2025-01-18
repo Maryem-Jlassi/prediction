@@ -415,8 +415,7 @@ def ml_page():
     if st.button("← Return to Main Page"):
         st.session_state["page"] = "main"
 
-    with st.container():
-    st.markdown("<h1 style='text-align: center;'></h1>", unsafe_allow_html=True)
+    
     st.image("res.png", caption="Bannière d'accueil", use_container_width=True)
         
 
