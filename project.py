@@ -548,7 +548,7 @@ def page_2():
     """Page de prédiction du taux de conformité des employés."""
     st.markdown('<h1 class="fade-in">Employee Compliance Rate Prediction</h1>', unsafe_allow_html=True)
  
-     st.markdown(
+    st.markdown(
     """
     <style>
     input {
