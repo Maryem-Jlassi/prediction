@@ -127,7 +127,7 @@ st.markdown("""
     padding: 1rem 2rem; /* Spacious padding */
     border-radius: 12px; /* Rounded corners */
     cursor: pointer; /* Pointer cursor for interactivity */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; /* Smooth transitions */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; /* Smooth transitions */
     width: 100%; /* Full-width button */
     margin: 0.5rem 0; /* Spacing between buttons */
     font-weight: 600; /* Slightly bolder text */
@@ -159,7 +159,7 @@ st.markdown("""
         padding: 0.75rem 2rem;
         font-weight: 600;
         width: 100%;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .stButton > button:hover {
@@ -353,7 +353,7 @@ def main_page():
     with col1:
         st.markdown("""
                      <style>.card-title {
-            color: #2c3e50;
+            color: inherit;
             font-size: 1.5rem;
             font-weight: 600;
             text-align: center;
@@ -372,7 +372,7 @@ def main_page():
     with col2:
         st.markdown("""
                      <style>.card-title {
-            color: #2c3e50;
+            color: inherit;
             font-size: 1.5rem;
             font-weight: 600;
             text-align: center;
