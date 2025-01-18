@@ -366,7 +366,7 @@ def main_page():
             </div>
         """, unsafe_allow_html=True)
         
-    if st.button("🔍 Explore Analytics", key="powerbi_button"):
+        if st.button("🔍 Explore Analytics", key="powerbi_button"):
             st.session_state["page"] = "powerbi"
 
     with col2:
