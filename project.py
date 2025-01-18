@@ -344,9 +344,7 @@ def main_page():
     st.markdown("""
         <div class="glass-card fade-in">
             <h2>Restaurant Analytics Platform</h2>
-            <p>This platform leverages advanced machine learning models to assess key factors such as food quality, risk levels, and employee compliance within the restaurant industry.<br> It is designed to provide practical tools to enhance food safety and streamline health inspection processes.
-
-.</p>
+            <p>This platform leverages advanced machine learning models to assess key factors such as food quality, risk levels, and employee compliance within the restaurant industry.<br> It is designed to provide practical tools to enhance food safety and streamline health inspection processes.</p>
         </div>
     """, unsafe_allow_html=True)
 
