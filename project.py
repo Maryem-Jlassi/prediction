@@ -365,7 +365,8 @@ def main_page():
                 <h3 class="card-title">Business Intelligence</h3>
             </div>
         """, unsafe_allow_html=True)
-      
+        if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
         if st.button("🔍 Explore Analytics", key="powerbi_button") and not st.session_state.button_clicked:
             st.session_state.button_clicked = True
             st.session_state["page"] = "powerbi"
@@ -385,6 +386,8 @@ def main_page():
                 <h3 class="card-title">Predictive Analytics</h3>
             </div>
         """, unsafe_allow_html=True)
+        if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
         if st.button("🎯 Access Predictions", key="ml_button") and not st.session_state.button_clicked:
             st.session_state.button_clicked = True
             st.session_state["page"] = "ml"
@@ -524,9 +527,11 @@ def page_1():
         # Mise à l'échelle de la prédiction utilisateur
         user_prediction_scaled = min_max_scaler.transform(prediction.reshape(-1, 1))
         st.success(f"✅ The prediction of the Food Quality Score : {user_prediction_scaled[0][0]:.2f}")
-
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
     # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page"):
+    if st.button("Return to the machine learning page") and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
@@ -601,6 +606,8 @@ def page_2():
         
         # Training Hours (Slider: 10 to 199)
         training_hours = st.slider("Training Hours", 10, 199, 50)
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
 
     # Prediction
     if st.button("Predict Compliance Rate") and not st.session_state.button_clicked:
@@ -751,6 +758,8 @@ def page_3():
         predicted_label = class_labels.get(float(prediction[0]), "Unknown")
         # Display the prediction result
         st.write(f"The prediction of Risk Level: **{predicted_label}**")
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
 
     # Return to the initial page by updating the session state
     if st.button("Return to the machine learning page") and not st.session_state.button_clicked:
@@ -776,6 +785,8 @@ def powerbi_page():
             </div>
         </div>
     """, unsafe_allow_html=True)
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
 
     if st.button("← Return to Main Page")and not st.session_state.button_clicked:
         st.session_state.button_clicked = True
