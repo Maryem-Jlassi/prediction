@@ -13,20 +13,6 @@ import xgboost as xgb
 import zipfile
 import os
 
-def extract_model(zip_file, output_folder):
-    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-        zip_ref.extractall(output_folder)
-
-zip_file_path = 'good.zip'  
-output_folder = 'model/'  
-
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
-
-extract_model(zip_file_path, output_folder)
-model_path = os.path.join(output_folder, 'good.pkl')  
-model1 = joblib.load(model_path)
-# Configuration de la page
 st.set_page_config(
     page_title="InsightPlate Analytics",
     layout="wide",
@@ -671,7 +657,33 @@ def page_2():
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
+def extract_model(zip_file, output_folder):
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        zip_ref.extractall(output_folder)
 
+# Chemin du fichier zip et du dossier de sortie
+zip_file_path = 'good.zip'
+output_folder = 'model/'
+
+# Extraction du modèle si le dossier n'existe pas déjà
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+extract_model(zip_file_path, output_folder)
+
+model_path = os.path.join(output_folder, 'good.pkl')
+
+# Vérification de l'existence du modèle
+if not os.path.exists(model_path):
+    st.error(f"Model file not found at {model_path}. Extraction may have failed.")
+
+# Chargement du modèle
+def load_model():
+    try:
+        model = joblib.load(model_path)
+        return model
+    except Exception as e:
+        st.error(f"Error loading model: {str(e)}")
+        return None
 def page_3():
     """Page de prédiction du niveau de risque des restaurants."""
     st.markdown('<h1 class="fade-in">Restaurant Risk Level Predictor</h1>', unsafe_allow_html=True)
@@ -681,7 +693,7 @@ def page_3():
 }  </style>
     """, unsafe_allow_html=True) 
     # Chargement du modèle
-    model1 = load_model()
+    model = load_model()
     with st.expander("About this predictor"):
         st.write("""This tool predicts the **risk level** for restaurants in Los Angeles based on various inputs.
                  . The prediction uses a machine learning model based on historical data. """)
