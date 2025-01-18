@@ -559,6 +559,9 @@ def page_2():
     label {
         color: white !important;  /* Titre des inputs en blanc */
     }
+     .stMetric > div {
+        color: white !important;  /* Valeur prédite en blanc */
+    }
     </style>
     """,
     unsafe_allow_html=True
