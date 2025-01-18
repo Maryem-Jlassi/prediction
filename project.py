@@ -365,9 +365,10 @@ def main_page():
                 <h3 class="card-title">Business Intelligence</h3>
             </div>
         """, unsafe_allow_html=True)
-        if 'button_clicked' not in st.session_state:
+        
+    if 'button_clicked' not in st.session_state:
         st.session_state.button_clicked = False
-        if st.button("🔍 Explore Analytics", key="powerbi_button") and not st.session_state.button_clicked:
+    if st.button("🔍 Explore Analytics", key="powerbi_button") and not st.session_state.button_clicked:
             st.session_state.button_clicked = True
             st.session_state["page"] = "powerbi"
 
