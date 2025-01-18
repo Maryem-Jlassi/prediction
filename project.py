@@ -359,7 +359,85 @@ def main():
 
 def main_page():
     """Page d'accueil avec design moderne."""
-    st.markdown('<h1 class="fade-in">Welcome to InsightPlate Analytics</h1>', unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+        /* Style de la bannière */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 28, 32, 0.85), rgba(44, 62, 80, 0.85));
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .banner-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .banner-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Animation au survol */
+        .banner-container:hover .banner-image {
+            transform: scale(1.05);
+        }
+        
+        /* Style des cartes amélioré */
+        .glass-card {
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Bannière avec image et overlay
+    st.markdown("""
+        <div class="banner-container">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" 
+                 class="banner-image" alt="Restaurant banner">
+            <div class="banner-overlay">
+                <h1 class="banner-title">Welcome to InsightPlate Analytics</h1>
+                <p class="banner-subtitle">Discover powerful insights about restaurant performance and food safety in Los Angeles</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("""
     <div class="glass-card fade-in">
@@ -455,7 +533,7 @@ def ml_page():
     if st.button("← Return to Main Page", on_click=nav_to, args=('main',)):
         st.session_state["page"] = "main"
 
-    st.image("res.png", caption="Bannière d'accueil", use_container_width=True)
+    st.image("res.png", use_container_width=True)
         
 def page_1():
     """Page de prédiction du score de qualité alimentaire."""
