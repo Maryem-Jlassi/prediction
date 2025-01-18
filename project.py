@@ -366,7 +366,8 @@ def main_page():
             </div>
         """, unsafe_allow_html=True)
       
-        if st.button("🔍 Explore Analytics", key="powerbi_button"):
+        if st.button("🔍 Explore Analytics", key="powerbi_button") and not st.session_state.button_clicked:
+            st.session_state.button_clicked = True
             st.session_state["page"] = "powerbi"
 
     with col2:
@@ -384,7 +385,8 @@ def main_page():
                 <h3 class="card-title">Predictive Analytics</h3>
             </div>
         """, unsafe_allow_html=True)
-        if st.button("🎯 Access Predictions", key="ml_button"):
+        if st.button("🎯 Access Predictions", key="ml_button") and not st.session_state.button_clicked:
+            st.session_state.button_clicked = True
             st.session_state["page"] = "ml"
 
 def ml_page():
@@ -398,20 +400,25 @@ def ml_page():
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
-
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
     with col1:
-        if st.button("🍲 Food Quality Score Prediction"):
+        if st.button("🍲 Food Quality Score Prediction") and not st.session_state.button_clicked:
+            st.session_state.button_clicked = True
             st.session_state["page"] = "page_1"
 
     with col2:
-        if st.button("👥 Employee Compliance Rate"):
+        if st.button("👥 Employee Compliance Rate") and not st.session_state.button_clicked:
+            st.session_state.button_clicked = True
             st.session_state["page"] = "page_2"
 
     with col3:
-        if st.button("🏪 Restaurant Risk Level"):
+        if st.button("🏪 Restaurant Risk Level") and not st.session_state.button_clicked:
+            st.session_state.button_clicked = True
             st.session_state["page"] = "page_3"
 
-    if st.button("← Return to Main Page"):
+    if st.button("← Return to Main Page") and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         st.session_state["page"] = "main"
 
 def page_1():
@@ -596,7 +603,8 @@ def page_2():
         training_hours = st.slider("Training Hours", 10, 199, 50)
 
     # Prediction
-    if st.button("Predict Compliance Rate"):
+    if st.button("Predict Compliance Rate") and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         try:
             # Create input data frame
             input_data = pd.DataFrame({
