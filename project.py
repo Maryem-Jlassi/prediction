@@ -12,6 +12,8 @@ import joblib
 import xgboost as xgb
 import zipfile
 import os
+import folium
+
 
 st.set_page_config(
     page_title="InsightPlate Analytics",
@@ -328,6 +330,10 @@ def main():
         .ml-image {
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160"><rect width="200" height="160" fill="%232C3E50"/><circle cx="40" cy="40" r="10" fill="%239B59B6"/><circle cx="40" cy="80" r="10" fill="%239B59B6"/><circle cx="40" cy="120" r="10" fill="%239B59B6"/><circle cx="100" cy="60" r="10" fill="%238E44AD"/><circle cx="100" cy="100" r="10" fill="%238E44AD"/><circle cx="160" cy="80" r="10" fill="%239B59B6"/><path d="M50 40 L90 60" stroke="%23ECF0F1" stroke-width="2"/><path d="M50 40 L90 100" stroke="%23ECF0F1" stroke-width="2"/><path d="M50 80 L90 60" stroke="%23ECF0F1" stroke-width="2"/><path d="M50 80 L90 100" stroke="%23ECF0F1" stroke-width="2"/><path d="M50 120 L90 60" stroke="%23ECF0F1" stroke-width="2"/><path d="M50 120 L90 100" stroke="%23ECF0F1" stroke-width="2"/><path d="M110 60 L150 80" stroke="%23ECF0F1" stroke-width="2"/><path d="M110 100 L150 80" stroke="%23ECF0F1" stroke-width="2"/><path d="M170 80 L190 80" stroke="%23E74C3C" stroke-width="3"/><path d="M185 75 L190 80 L185 85" fill="none" stroke="%23E74C3C" stroke-width="3"/></svg>');
         }
+        .visual-image {
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160"><rect width="200" height="160" fill="%232C3E50"/><rect x="30" y="90" width="20" height="50" fill="%233498DB"/><rect x="60" y="70" width="20" height="70" fill="%23E74C3C"/><rect x="90" y="50" width="20" height="90" fill="%239B59B6"/><rect x="120" y="30" width="20" height="110" fill="%23F1C40F"/><rect x="150" y="110" width="20" height="30" fill="%2349A44A"/><line x1="20" y1="140" x2="180" y2="140" stroke="%23FFFFFF" stroke-width="1"/><line x1="20" y1="10" x2="20" y2="140" stroke="%23FFFFFF" stroke-width="1"/><text x="10" y="145" fill="%23FFFFFF" font-size="8" font-family="Arial">0</text><text x="10" y="125" fill="%23FFFFFF" font-size="8" font-family="Arial">20</text><text x="10" y="85" fill="%23FFFFFF" font-size="8" font-family="Arial">60</text><text x="10" y="45" fill="%23FFFFFF" font-size="8" font-family="Arial">100</text><text x="10" y="15" fill="%23FFFFFF" font-size="8" font-family="Arial">140</text></svg>');
+
+    }
         
         @keyframes fadeIn {
             0% { opacity: 0; }
@@ -342,13 +348,18 @@ def main_page():
     st.markdown('<h1 class="fade-in">Welcome to InsightPlate Analytics</h1>', unsafe_allow_html=True)
     
     st.markdown("""
-        <div class="glass-card fade-in">
-            <h2>Restaurant Analytics Platform</h2>
-            <p>This platform leverages advanced machine learning models to assess key factors such as food quality, risk levels, and employee compliance within the restaurant industry.<br> It is designed to provide practical tools to enhance food safety and streamline health inspection processes.</p>
-        </div>
+    <div class="glass-card fade-in">
+        <h2>About This Platform :</h2>
+        <h5>This platform uses advanced machine learning models to predict food quality, assess risk levels, 
+            and evaluate employee compliance within the restaurant industry in Los Angeles. 
+            <br>By leveraging real-time data 
+            and predictive analytics, it aims to enhance food safety, optimize health inspections, and support restaurants 
+            in maintaining high standards. 
+        </h5>
+    </div>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    col1, col2,col3 = st.columns(3)
 
     with col1:
         st.markdown("""
@@ -387,6 +398,24 @@ def main_page():
         
         if st.button("🎯 Access Predictions", key="ml_button") :
             st.session_state["page"] = "ml"
+    with col3:
+        st.markdown("""
+                     <style>.card-title {
+            color: inherit;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 1rem 0;
+        }</style>""", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="glass-card">
+            <div class="visual-image card-image"></div>
+            <h3 class="card-title">Data Insights</h3>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("📊 Launch Insights", key="data_viz_button"):
+            st.session_state["page"] = "viz"
 
 def ml_page():
     """Page des modèles de machine learning."""
@@ -758,7 +787,51 @@ def powerbi_page():
 
     if st.button("← Return to Main Page"):
         st.session_state["page"] = "main"
+def viz_page():
+    st.markdown('<h1 class="fade-in">Data Insights</h1>', unsafe_allow_html=True)
+    from streamlit.components.v1 import html
+    st.markdown("""
+    <div class="glass-card fade-in">
+        <h5>
+            Our platform leverages comprehensive restaurant inspection data to forecast food safety and compliance risks. 
+            By analyzing key factors such as violation types, inspection outcomes, and employee performance, 
+            we generate actionable insights that support the enhancement of restaurant safety standards in Los Angeles.
+        </h5>
+    </div>
+   """, unsafe_allow_html=True)
 
+    st.subheader("Datasets Overview")
+    st.write("""
+    This project uses three primary datasets related to restaurant and food market inspections in Los Angeles:
+    - **Inspection Results Dataset**: Contains detailed records of food safety inspections in restaurants and food markets, including violation types and severity.
+    - **Violation Types Dataset**: Provides a breakdown of common violations identified during inspections, helping to highlight frequent issues.
+    - **Employee Performance Dataset**: Tracks the performance of restaurant staff during inspections, identifying potential correlations between employee behavior and food safety violations.
+    """)
+        
+    st.subheader("Data Preprocessing and Feature Engineering")
+    st.write("""
+    The data was cleaned and preprocessed to ensure consistency and accuracy. Key transformations include:
+    - Encoding categorical variables ( violation status, inspection outcomes...).
+    - Handling missing values by imputing or removing records where appropriate.
+    - Feature selection to identify the most relevant factors for predicting food safety risks.
+    """)
+
+
+    st.subheader("Decision Support for Food Safety")
+    st.write("""
+    The insights derived from the inspection data, combined with predictive analytics, provide a decision support tool for local authorities. 
+    This platform allows authorities to identify at-risk establishments and allocate resources more effectively to improve food safety standards.
+    """)
+
+    m = folium.Map(location=[34.0522, -118.2437], zoom_start=13)
+    marker = folium.Marker([34.0522, -118.2437], popup="Los Angeles")
+    marker.add_to(m)
+    # Display the map
+    html(m._repr_html_(), height=470)
+
+
+    if st.button("← Return to Main Page"):
+        st.session_state["page"] = "main"
 # Gestion de la navigation
 if "page" not in st.session_state:
     st.session_state["page"] = "main"
@@ -768,6 +841,7 @@ page_mapping = {
     "main": main_page,
     "ml": ml_page,
     "powerbi": powerbi_page,
+    "viz":viz_page,
     "page_1": page_1,
     "page_2": page_2,
     "page_3": page_3
