@@ -22,6 +22,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+if 'page' not in st.session_state:
+    st.session_state.page = 'main'
+if 'button_clicked' not in st.session_state:
+    st.session_state.button_clicked = False
+
+# Create navigation functions
+def nav_to(page_name):
+    st.session_state.page = page_name
+    st.session_state.button_clicked = True
+
 # Styles globaux
 st.markdown("""
     <style>
@@ -380,8 +390,7 @@ def main_page():
                 <h3 class="card-title">Business Intelligence</h3>
             </div>
         """, unsafe_allow_html=True)
-        
-        if st.button("🔍 Explore Analytics", key="powerbi_button"):
+        if st.button("🔍 Explore Analytics", key="powerbi_button", on_click=nav_to, args=('powerbi',)):
             st.session_state["page"] = "powerbi"
 
     with col2:
@@ -399,8 +408,7 @@ def main_page():
                 <h3 class="card-title">Predictive Analytics</h3>
             </div>
         """, unsafe_allow_html=True)
-        
-        if st.button("🎯 Access Predictions", key="ml_button") :
+        if st.button("🎯 Access Predictions", key="ml_button", on_click=nav_to, args=('ml',)):
             st.session_state["page"] = "ml"
     with col3:
         st.markdown("""
@@ -417,8 +425,7 @@ def main_page():
             <h3 class="card-title">Data Insights</h3>
         </div>
         """, unsafe_allow_html=True)
-
-        if st.button("📊 Launch Insights", key="data_viz_button"):
+        if st.button("📊 Launch Insights", key="data_viz_button", on_click=nav_to, args=('viz',)):
             st.session_state["page"] = "viz"
 
 def ml_page():
@@ -434,25 +441,22 @@ def ml_page():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("🍲 Food Quality Score Prediction"):
+        if st.button("🍲 Food Quality Score Prediction", on_click=nav_to, args=('page_1',)):
             st.session_state["page"] = "page_1"
 
     with col2:
-        if st.button("👥 Employee Compliance Rate"):
+        if st.button("👥 Employee Compliance Rate", on_click=nav_to, args=('page_2',)):
             st.session_state["page"] = "page_2"
 
     with col3:
-        if st.button("🏪 Restaurant Risk Level"):
+        if st.button("🏪 Restaurant Risk Level", on_click=nav_to, args=('page_3',)):
             st.session_state["page"] = "page_3"
-
-    if st.button("← Return to Main Page"):
+            
+    if st.button("← Return to Main Page", on_click=nav_to, args=('main',)):
         st.session_state["page"] = "main"
 
-    
     st.image("res.png", caption="Bannière d'accueil", use_container_width=True)
         
-
-
 def page_1():
     """Page de prédiction du score de qualité alimentaire."""
     st.markdown('<h1 class="fade-in">Food Quality Score Predictor </h1>', unsafe_allow_html=True)
@@ -461,7 +465,6 @@ def page_1():
     color: white;
 }  </style>
     """, unsafe_allow_html=True) 
-    # Chargement du modèle XGBoost
     try:
         with open('xgboost_model.pkl', 'rb') as file:
             model_xgb = pickle.load(file)
@@ -469,14 +472,12 @@ def page_1():
         st.error(f"Error loading model: {str(e)}")
         return
 
-    # Chargement et préparation des données
     try:
         df = pd.read_csv("dataset_adjusted_nulls.csv")
     except Exception as e:
         st.error(f"Error loading dataset: {str(e)}")
         return
 
-    # Configuration du modèle et prédiction
     target_column = "Food_Quality_Score"
     if target_column not in df.columns:
         st.error(f"Target column '{target_column}' not found in dataset.")
@@ -485,7 +486,6 @@ def page_1():
     numerical_columns = df.select_dtypes(include=['float64', 'int64']).columns
     categorical_columns = df.select_dtypes(include=['object']).columns
 
-    # Imputer les valeurs manquantes
     imputer_num = SimpleImputer(strategy='mean')
     df[numerical_columns] = imputer_num.fit_transform(df[numerical_columns])
 
@@ -493,18 +493,15 @@ def page_1():
         imputer_cat = SimpleImputer(strategy='most_frequent')
         df[categorical_columns] = imputer_cat.fit_transform(df[categorical_columns])
 
-    # Encodage des variables catégoriques
     label_encoders = {}
     for col in categorical_columns:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col])
         label_encoders[col] = le
 
-    # Normalisation des colonnes numériques
     scaler = StandardScaler()
     df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
 
-    # Sélection des fonctionnalités
     X_reg = df.drop(columns=[target_column])
     y_reg = df[target_column]
 
@@ -512,28 +509,23 @@ def page_1():
     X_reg_selected = selector_reg.fit_transform(X_reg, y_reg)
     selected_features_reg = X_reg.columns[selector_reg.get_support()]
 
-    # Split data (train/test)
     X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(
         X_reg_selected, y_reg, test_size=0.2, random_state=42
     )
 
-    # Prédictions avec XGBoost
     y_train_xgb = model_xgb.predict(X_train_reg)
     y_pred_xgb = model_xgb.predict(X_test_reg)
 
-    # Mise à l'échelle des scores
     min_max_scaler = MinMaxScaler(feature_range=(0, 100))
     y_reg_scaled = min_max_scaler.fit_transform(y_reg.values.reshape(-1, 1))
     y_pred_scaled = min_max_scaler.transform(y_pred_xgb.reshape(-1, 1))
     y_test_scaled = min_max_scaler.transform(y_test_reg.values.reshape(-1, 1))
 
-    # Calcul des métriques
     mae_xgb = mean_absolute_error(y_test_scaled, y_pred_scaled)
     mse_xgb = mean_squared_error(y_test_scaled, y_pred_scaled)
     rmse_xgb = np.sqrt(mse_xgb)
     r2_xgb = r2_score(y_test_scaled, y_pred_scaled)
 
-    # Section affichage des métriques
     st.subheader("📊 Model Performance Metrics")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("MAE (Mean Absolute Error)", f"{mae_xgb:.2f}")
@@ -541,7 +533,6 @@ def page_1():
     col3.metric("RMSE (Root Mean Squared Error)", f"{rmse_xgb:.2f}")
     col4.metric("R² Score", f"{r2_xgb:.2f}")
 
-    # Section pour la prédiction utilisateur
     st.subheader("🔮 Predict Food Quality Score")
     st.write("Please enter the values of the selected variables to make a prediction:")
     user_input = {col: st.number_input(f"{col}", format="%.2f") for col in selected_features_reg}
@@ -550,23 +541,19 @@ def page_1():
         user_input_array = np.array([list(user_input.values())]).reshape(1, -1)
         prediction = model_xgb.predict(user_input_array)
 
-        # Mise à l'échelle de la prédiction utilisateur
         user_prediction_scaled = min_max_scaler.transform(prediction.reshape(-1, 1))
         st.success(f"✅ The prediction of the Food Quality Score : {user_prediction_scaled[0][0]:.2f}")
 
-    # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page"):
-        st.session_state["page"] = "ml"  # Set the page to the main page
+    if st.button("Return to the machine learning page", on_click=nav_to, args=('ml',)):
+        st.session_state["page"] = "ml" 
 
 
-# Function to load the model and transformers
 @st.cache_resource
 def load_model_and_transformers():
     model = joblib.load('model.pkl')
     scaler = joblib.load('scaler.pkl')
     label_encoders = joblib.load('label_encoders.pkl')
     return model, scaler, label_encoders
-model, scaler, label_encoders = load_model_and_transformers()
 
 
 def page_2():
@@ -592,9 +579,6 @@ def page_2():
     unsafe_allow_html=True
     )
 
-
-
-    # Chargement du modèle et des transformateurs
     model, scaler, label_encoders = load_model_and_transformers()
     certification_levels = label_encoders['Certification Level'].classes_
     with st.expander("About this predictor"):
@@ -632,7 +616,6 @@ def page_2():
         training_hours = st.slider("Training Hours", 10, 199, 50)
     
 
-    # Prediction
     if st.button("Predict Compliance Rate"):
         try:
             # Create input data frame
@@ -689,8 +672,8 @@ def page_2():
                 st.write("Error details:", e)
                 st.write("Input data:", input_data)
             st.write("Please make sure all inputs are filled correctly and try again.")
-
-    if st.button("Return to the machine learning page"):
+            
+    if st.button("Return to the machine learning page", on_click=nav_to, args=('ml',)):
         st.session_state["page"] = "ml" 
 
 
@@ -737,11 +720,6 @@ def page_3():
         2.0: "HIGH RISK"
     }
 
-    
-    # Load dataset preview
-    #data_path = 'mydata.csv' # Ensure the path is correct
-    #df = pd.read_csv(data_path)
-
     st.subheader("🔮 Predict Risk Level")
     # Input fields for features
     st.subheader("""Please enter the values of the selected variables to make a prediction:""")
@@ -767,9 +745,9 @@ def page_3():
         predicted_label = class_labels.get(float(prediction[0]), "Unknown")
         # Display the prediction result
         st.write(f"The prediction of Risk Level: **{predicted_label}**")
-    
-    if st.button("Return to the machine learning page") :
-        st.session_state["page"] = "ml"  # Set the page to the main page
+        
+    if st.button("Return to the machine learning page", on_click=nav_to, args=('ml',)):
+        st.session_state["page"] = "ml"  
 def powerbi_page():
     """Page Power BI avec tableau de bord intégré."""
     st.markdown('<h1 class="fade-in">Analytics Dashboard</h1>', unsafe_allow_html=True)
@@ -788,8 +766,7 @@ def powerbi_page():
         </div>
     """, unsafe_allow_html=True)
   
-
-    if st.button("← Return to Main Page"):
+    if st.button("← Return to Main Page", on_click=nav_to, args=('ml',)):
         st.session_state["page"] = "main"
 def viz_page():
     st.markdown('<h1 class="fade-in">Data Insights</h1>', unsafe_allow_html=True)
@@ -833,25 +810,44 @@ def viz_page():
     # Display the map
     html(m._repr_html_(), height=470)
 
-
-    if st.button("← Return to Main Page"):
+    if st.button("← Return to Main Page", on_click=nav_to, args=('ml',)):
         st.session_state["page"] = "main"
+
+def main():
+    # Page routing
+    pages = {
+        'main': main_page,
+        'ml': ml_page,
+        'powerbi': powerbi_page,
+        'viz': viz_page,
+        'page_1': page_1,
+        'page_2': page_2,
+        'page_3': page_3
+    }
+    
+    # Call the appropriate page function
+    if st.session_state.page in pages:
+        pages[st.session_state.page]()
+
+if __name__ == "__main__":
+    main()
+
+
 # Gestion de la navigation
-if "page" not in st.session_state:
-    st.session_state["page"] = "main"
+#if "page" not in st.session_state:
+    #st.session_state["page"] = "main"
 
 # Router
-page_mapping = {
-    "main": main_page,
-    "ml": ml_page,
-    "powerbi": powerbi_page,
-    "viz":viz_page,
-    "page_1": page_1,
-    "page_2": page_2,
-    "page_3": page_3
-}
+#page_mapping = {
+    #"main": main_page,
+    #"ml": ml_page,
+   # "powerbi": powerbi_page,
+   # "viz":viz_page,
+    #"page_1": page_1,
+   # "page_2": page_2,
+  #  "page_3": page_3}
 
 # Appel de la page appropriée
-current_page = st.session_state["page"]
-if current_page in page_mapping:
-    page_mapping[current_page]()
+#current_page = st.session_state["page"]
+#if current_page in page_mapping:
+   # page_mapping[current_page]()
