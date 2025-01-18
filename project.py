@@ -388,7 +388,7 @@ def main_page():
             </div>
         """, unsafe_allow_html=True)
         if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
+            st.session_state.button_clicked = False
         if st.button("🎯 Access Predictions", key="ml_button") and not st.session_state.button_clicked:
             st.session_state.button_clicked = True
             st.session_state["page"] = "ml"
