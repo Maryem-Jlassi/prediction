@@ -506,8 +506,11 @@ def page_1():
     st.subheader("🔮 Predict Food Quality Score")
     st.write("Please enter the values of the selected variables to make a prediction:")
     user_input = {col: st.number_input(f"{col}", format="%.2f") for col in selected_features_reg}
-
-    if st.button("Predict Food Quality Score"):
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
+        
+    if st.button("Predict Food Quality Score")  and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         user_input_array = np.array([list(user_input.values())]).reshape(1, -1)
         prediction = model_xgb.predict(user_input_array)
 
@@ -651,9 +654,11 @@ def page_2():
             st.write("Please make sure all inputs are filled correctly and try again.")
 
     # Add helpful information
-   
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
     # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page"):
+    if st.button("Return to the machine learning page")and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
@@ -727,9 +732,12 @@ def page_3():
         columns=['violation_code', 'violation_status', 'grade', 'program_element_pe', 
                 'service_code','month', 'weekday']
     )
+    if 'button_clicked' not in st.session_state:
+        st.session_state.button_clicked = False
     
     # Predict button
-    if st.button('Predict'):
+    if st.button('Predict')and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         # Make a prediction
         prediction = model.predict(user_input)
         predicted_label = class_labels.get(float(prediction[0]), "Unknown")
@@ -737,7 +745,8 @@ def page_3():
         st.write(f"The prediction of Risk Level: **{predicted_label}**")
 
     # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page"):
+    if st.button("Return to the machine learning page") and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
@@ -760,7 +769,8 @@ def powerbi_page():
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← Return to Main Page"):
+    if st.button("← Return to Main Page")and not st.session_state.button_clicked:
+        st.session_state.button_clicked = True
         st.session_state["page"] = "main"
 
 # Gestion de la navigation
