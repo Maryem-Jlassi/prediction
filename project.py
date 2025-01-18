@@ -765,9 +765,9 @@ def powerbi_page():
             </div>
         </div>
     """, unsafe_allow_html=True)
-  
-    if st.button("← Return to Main Page", on_click=nav_to, args=('ml',)):
+    if st.button("← Return to Main Page", on_click=nav_to, args=('main',)):
         st.session_state["page"] = "main"
+    
 def viz_page():
     st.markdown('<h1 class="fade-in">Data Insights</h1>', unsafe_allow_html=True)
     from streamlit.components.v1 import html
@@ -809,8 +809,8 @@ def viz_page():
     marker.add_to(m)
     # Display the map
     html(m._repr_html_(), height=470)
-
-    if st.button("← Return to Main Page", on_click=nav_to, args=('ml',)):
+    
+    if st.button("← Return to Main Page", on_click=nav_to, args=('main',)):
         st.session_state["page"] = "main"
 
 def main():
