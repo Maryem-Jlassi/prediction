@@ -414,6 +414,9 @@ def ml_page():
 
     if st.button("← Return to Main Page"):
         st.session_state["page"] = "main"
+        
+    st.image("res.png", caption="Bannière d'accueil", use_column_width=True)
+
 
 def page_1():
     """Page de prédiction du score de qualité alimentaire."""
