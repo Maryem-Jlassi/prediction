@@ -547,7 +547,8 @@ model, scaler, label_encoders = load_model_and_transformers()
 def page_2():
     """Page de prédiction du taux de conformité des employés."""
     st.markdown('<h1 class="fade-in">Employee Compliance Rate Prediction</h1>', unsafe_allow_html=True)
-    st.markdown(
+ 
+     st.markdown(
     """
     <style>
     input {
@@ -555,10 +556,13 @@ def page_2():
         background-color: #333333 !important;
         border: 1px solid #555555 !important;
     }
+    label {
+        color: white !important;  /* Titre des inputs en blanc */
+    }
     </style>
     """,
     unsafe_allow_html=True
-)
+    )
 
 
 
