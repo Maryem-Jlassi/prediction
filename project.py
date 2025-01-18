@@ -401,25 +401,20 @@ def ml_page():
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
+    
     with col1:
-        if st.button("🍲 Food Quality Score Prediction") and not st.session_state.button_clicked:
-            st.session_state.button_clicked = True
+        if st.button("🍲 Food Quality Score Prediction"):
             st.session_state["page"] = "page_1"
 
     with col2:
-        if st.button("👥 Employee Compliance Rate") and not st.session_state.button_clicked:
-            st.session_state.button_clicked = True
+        if st.button("👥 Employee Compliance Rate"):
             st.session_state["page"] = "page_2"
 
     with col3:
-        if st.button("🏪 Restaurant Risk Level") and not st.session_state.button_clicked:
-            st.session_state.button_clicked = True
+        if st.button("🏪 Restaurant Risk Level"):
             st.session_state["page"] = "page_3"
 
-    if st.button("← Return to Main Page") and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    if st.button("← Return to Main Page"):
         st.session_state["page"] = "main"
 
 def page_1():
@@ -514,22 +509,17 @@ def page_1():
     st.subheader("🔮 Predict Food Quality Score")
     st.write("Please enter the values of the selected variables to make a prediction:")
     user_input = {col: st.number_input(f"{col}", format="%.2f") for col in selected_features_reg}
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
-        
-    if st.button("Predict Food Quality Score")  and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    
+    if st.button("Predict Food Quality Score") :
         user_input_array = np.array([list(user_input.values())]).reshape(1, -1)
         prediction = model_xgb.predict(user_input_array)
 
         # Mise à l'échelle de la prédiction utilisateur
         user_prediction_scaled = min_max_scaler.transform(prediction.reshape(-1, 1))
         st.success(f"✅ The prediction of the Food Quality Score : {user_prediction_scaled[0][0]:.2f}")
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
+
     # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page") and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    if st.button("Return to the machine learning page"):
         st.session_state["page"] = "ml"  # Set the page to the main page
 
 
@@ -604,12 +594,10 @@ def page_2():
         
         # Training Hours (Slider: 10 to 199)
         training_hours = st.slider("Training Hours", 10, 199, 50)
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
+    
 
     # Prediction
-    if st.button("Predict Compliance Rate") and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    if st.button("Predict Compliance Rate"):
         try:
             # Create input data frame
             input_data = pd.DataFrame({
@@ -666,35 +654,25 @@ def page_2():
                 st.write("Input data:", input_data)
             st.write("Please make sure all inputs are filled correctly and try again.")
 
-    # Add helpful information
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
-    # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page")and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
-        st.session_state["page"] = "ml"  # Set the page to the main page
+    if st.button("Return to the machine learning page"):
+        st.session_state["page"] = "ml" 
 
 
 def extract_model(zip_file, output_folder):
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
         zip_ref.extractall(output_folder)
 
-# Chemin du fichier zip et du dossier de sortie
 zip_file_path = 'good.zip'
 output_folder = 'model/'
 
-# Extraction du modèle si le dossier n'existe pas déjà
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 extract_model(zip_file_path, output_folder)
 
 model_path = os.path.join(output_folder, 'good.pkl')
-
-# Vérification de l'existence du modèle
 if not os.path.exists(model_path):
     st.error(f"Model file not found at {model_path}. Extraction may have failed.")
 
-# Chargement du modèle
 def load_model():
     try:
         model = joblib.load(model_path)
@@ -745,27 +723,17 @@ def page_3():
         columns=['violation_code', 'violation_status', 'grade', 'program_element_pe', 
                 'service_code','month', 'weekday']
     )
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
     
     # Predict button
-    if st.button('Predict')and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    if st.button('Predict'):
         # Make a prediction
         prediction = model.predict(user_input)
         predicted_label = class_labels.get(float(prediction[0]), "Unknown")
         # Display the prediction result
         st.write(f"The prediction of Risk Level: **{predicted_label}**")
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
-
-    # Return to the initial page by updating the session state
-    if st.button("Return to the machine learning page") and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    
+    if st.button("Return to the machine learning page") :
         st.session_state["page"] = "ml"  # Set the page to the main page
-
-
-
 def powerbi_page():
     """Page Power BI avec tableau de bord intégré."""
     st.markdown('<h1 class="fade-in">Analytics Dashboard</h1>', unsafe_allow_html=True)
@@ -783,11 +751,9 @@ def powerbi_page():
             </div>
         </div>
     """, unsafe_allow_html=True)
-    if 'button_clicked' not in st.session_state:
-        st.session_state.button_clicked = False
+  
 
-    if st.button("← Return to Main Page")and not st.session_state.button_clicked:
-        st.session_state.button_clicked = True
+    if st.button("← Return to Main Page"):
         st.session_state["page"] = "main"
 
 # Gestion de la navigation
