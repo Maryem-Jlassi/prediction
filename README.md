@@ -68,7 +68,7 @@ streamlit run project.py
 This will launch the app in your default web browser.
 
 
-**App Pages**
+## **App Pages**
 
 -Main Page: Provides an overview of the platform, featuring links to predictive analytics, business intelligence, and data insights.
 
@@ -78,11 +78,11 @@ This will launch the app in your default web browser.
 
 -Data Insights Page: Displays key data insights and a map showing restaurant inspection locations.
 
-**Contributing**
+## **Contributing**
 
 Feel free to fork this project, open issues, and submit pull requests. Contributions are always welcome!
 
-**License**
+## **License**
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
