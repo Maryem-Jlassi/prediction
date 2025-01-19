@@ -60,6 +60,7 @@ git clone https://github.com/Maryem-Jlassi/prediction.git
 cd prediction
 
 **Running the App**
+
 To run the app, navigate to the directory where the repository is located and execute the following command:
 
 streamlit run project.py
@@ -68,6 +69,7 @@ This will launch the app in your default web browser.
 
 
 **App Pages**
+
 -Main Page: Provides an overview of the platform, featuring links to predictive analytics, business intelligence, and data insights.
 
 -Predictive Models Page: Choose between three predictive models related to food quality, employee compliance, and restaurant risk level.
@@ -77,7 +79,10 @@ This will launch the app in your default web browser.
 -Data Insights Page: Displays key data insights and a map showing restaurant inspection locations.
 
 **Contributing**
+
 Feel free to fork this project, open issues, and submit pull requests. Contributions are always welcome!
+
 **License**
+
 This project is licensed under the MIT License - see the LICENSE file for details.
 
